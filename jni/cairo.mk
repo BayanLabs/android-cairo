@@ -45,9 +45,11 @@ LIBCAIRO_SRC = \
 	       cairo/src/cairo-image-info.c                  \
 	       cairo/src/cairo-image-source.c                \
 	       cairo/src/cairo-image-surface.c               \
+	       cairo/src/cairo-line.c                        \
 	       cairo/src/cairo-lzw.c                         \
 	       cairo/src/cairo-mask-compositor.c             \
 	       cairo/src/cairo-matrix.c                      \
+	       cairo/src/cairo-mempool.c                     \
 	       cairo/src/cairo-mesh-pattern-rasterizer.c     \
 	       cairo/src/cairo-misc.c                        \
 	       cairo/src/cairo-mono-scan-converter.c         \
@@ -62,6 +64,7 @@ LIBCAIRO_SRC = \
 	       cairo/src/cairo-path-in-fill.c                \
 	       cairo/src/cairo-path-stroke-boxes.c           \
 	       cairo/src/cairo-path-stroke-polygon.c         \
+	       cairo/src/cairo-path-stroke-traps.c           \
 	       cairo/src/cairo-path-stroke-tristrip.c        \
 	       cairo/src/cairo-path-stroke.c                 \
 	       cairo/src/cairo-path.c                        \
@@ -110,6 +113,7 @@ LIBCAIRO_SRC = \
 	       cairo/src/cairo-user-font.c                   \
 	       cairo/src/cairo-version.c                     \
 	       cairo/src/cairo-wideint.c                     \
+           cairo/src/cairo-ft-font.c                     \
 
 
 LIBCAIRO_CFLAGS:=                                                   \
@@ -119,12 +123,22 @@ LIBCAIRO_CFLAGS:=                                                   \
     -DHAVE_STDINT_H                                                 \
     -DHAVE_UINT64_T                                                 \
 
+LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libcairo
 LOCAL_CFLAGS    := -O2 $(LIBCAIRO_CFLAGS) -Ijni/pixman/pixman -Ijni/cairo/src -Ijni/cairo-extra -Ijni/pixman-extra -Wno-missing-field-initializers -Wno-attributes
-LOCAL_LDFLAGS   := -lz
 LOCAL_SRC_FILES := $(LIBCAIRO_SRC)
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../freetype/include \
+					$(LOCAL_PATH)/cairo-extra \
+					$(LOCAL_PATH)/pixman/pixman \
+					$(LOCAL_PATH)/pixman-extra \
+					$(LOCAL_PATH)/../../freetype/include/config \
+					$(LOCAL_PATH)/../../freetype/include/internal \
+					/usr/local/include
+LOCAL_STATIC_LIBRARIES := freetype pixman
 
 include $(BUILD_STATIC_LIBRARY)
+
+include $(MY_LOCAL_PATH)/cairo/jni/pixman.mk
